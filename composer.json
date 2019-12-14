@@ -1,0 +1,37 @@
+{
+    "name": "segrax/opa-policy-generator",
+    "description": "Convert OpenAPI 3 specs to OPA Policies",
+    "keywords": [
+        "openapi",
+        "opa",
+        "authz",
+        "rego",
+        "policy"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Robert Crossfield",
+            "email": "segrax19@gmail.com",
+            "homepage": "https://github.com/segrax/"
+        }
+    ],
+	
+    "require": {
+        "monolog/monolog": "^1.17",
+        "php-di/php-di": "^6",
+        "symfony/console": "^4.3|^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Segrax\\OpaPolicyGenerator\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+    }
+}
