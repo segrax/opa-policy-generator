@@ -23,7 +23,7 @@ SOFTWARE.
 */
 
 /**
- * @see       https://github.com/segrax/OpaPolicyGenerator
+ * @see       https://github.com/segrax/opa-policy-generator
  * @license   https://www.opensource.org/licenses/mit-license.php
  */
 
@@ -108,6 +108,22 @@ class Path
     {
         $result = '';
         $security = $this->getSecurity();
+        // Public
+        if (count($security) === 0) {
+            return $this->getTest();
+        }
+
+        // Private
+        $result = '';
+        foreach ($security as $scheme => $scopes) {
+            $security = $this->set->securitySchemeGet($scheme);
+            if (is_null($security)) {
+                echo "security scheme '$scheme' could not be located\n";
+                continue;
+            }
+
+            $result .= $this->getTest($security, $scopes);
+        }
 
         return $result;
     }
@@ -133,6 +149,24 @@ class Path
             $result .= $pSecurity->getRule($pScopes);
         }
         $result .= "}\n";
+        return $result;
+    }
+
+    /**
+     * Get the policy test
+     */
+    protected function getTest(?Base $pSecurity = null, array $pScopes = []): string
+    {
+        $inputs = ['path' => $this->pathName, 'method' => $this->method];
+
+        $name = $this->set->resultNameGet();
+        $result = "\ntest_" . $this->getName() . "_allowed {\n";
+        if (!is_null($pSecurity)) {
+            $inputs += $pSecurity->getTest($pScopes);
+        }
+        $result .= "    $name with input as " . json_encode($inputs) . "\n";
+        $result .= "}\n";
+
         return $result;
     }
 

@@ -23,7 +23,7 @@ SOFTWARE.
 */
 
 /**
- * @see       https://github.com/segrax/OpaPolicyGenerator
+ * @see       https://github.com/segrax/opa-policy-generator
  * @license   https://www.opensource.org/licenses/mit-license.php
  */
 
@@ -59,5 +59,20 @@ class Http extends Base
         }
 
         return '';
+    }
+
+    public function getTest(array $pScopes): array
+    {
+        switch ($this->scheme) {
+            case self::SCHEME_BASIC:
+                return " basic not implemented\n";
+
+            case self::SCHEME_BEARER:
+                return ['token' => ['sub' => 'test']];
+
+            default:
+                break;
+        }
+
     }
 }

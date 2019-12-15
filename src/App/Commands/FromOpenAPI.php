@@ -60,6 +60,7 @@ class FromOpenAPI extends Command
         $policySet = $creator->fromFile($filename);
 
         echo $policySet->policyGet();
+        echo $policySet->policyTestGet();
         return 0;
     }
 }

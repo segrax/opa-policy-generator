@@ -23,7 +23,7 @@ SOFTWARE.
 */
 
 /**
- * @see       https://github.com/segrax/OpaPolicyGenerator
+ * @see       https://github.com/segrax/opa-policy-generator
  * @license   https://www.opensource.org/licenses/mit-license.php
  */
 
@@ -48,5 +48,10 @@ abstract class Base
     public function getRule(array $pScopes): string
     {
         return 'No Rule';
+    }
+
+    public function getTest(array $pScopes): array
+    {
+        return [];
     }
 }

@@ -23,7 +23,7 @@ SOFTWARE.
 */
 
 /**
- * @see       https://github.com/segrax/OpaPolicyGenerator
+ * @see       https://github.com/segrax/opa-policy-generator
  * @license   https://www.opensource.org/licenses/mit-license.php
  */
 
@@ -50,6 +50,16 @@ class OAuth2 extends Base
             $result .= "    input.token.scopes[scope{$count}] == \"$scope\"\n";
         }
 
+        return $result;
+    }
+
+    public function getTest(array $pScopes): array
+    {
+        $result = ['token' => ['scopes' => []]];
+
+        foreach ($pScopes as $count => $scope) {
+            $result['token']['scopes'][] = $scope;
+        }
         return $result;
     }
 }

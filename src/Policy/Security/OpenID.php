@@ -23,7 +23,7 @@ SOFTWARE.
 */
 
 /**
- * @see       https://github.com/segrax/OpaPolicyGenerator
+ * @see       https://github.com/segrax/opa-policy-generator
  * @license   https://www.opensource.org/licenses/mit-license.php
  */
 
