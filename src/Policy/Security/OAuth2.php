@@ -33,9 +33,15 @@ namespace Segrax\OpaPolicyGenerator\Policy\Security;
 
 class OAuth2 extends Base
 {
+    /**
+     * @var array
+     */
     protected $flows = [];
 
-    public function flowAdd(string $pType, array $pScopes)
+    /**
+     *
+     */
+    public function flowAdd(string $pType, array $pScopes): void
     {
         $this->flows[$pType] = $pScopes;
     }
@@ -53,13 +59,18 @@ class OAuth2 extends Base
         return $result;
     }
 
-    public function getTest(array $pScopes): array
+    public function getTestAllow(array $pScopes): array
     {
         $result = ['token' => ['scopes' => []]];
-
-        foreach ($pScopes as $count => $scope) {
+        foreach ($pScopes as $scope) {
             $result['token']['scopes'][] = $scope;
         }
+        return $result;
+    }
+
+    public function getTestDeny(array $pScopes): array
+    {
+        $result = ['token' => ['scopes' => []]];
         return $result;
     }
 }

@@ -33,10 +33,24 @@ namespace Segrax\OpaPolicyGenerator\Policy\Security;
 
 class APIKey extends Base
 {
-    private $location;
-    private $name;
+    private const PLACEHOLDER_APIKEY = 'a-fake-api-key';
 
-    public function set(string $pLocation, string $pName)
+    /**
+     * @var string
+     */
+    private $location = '';
+
+    /**
+     * @var string
+     */
+    private $name = '';
+
+    /**
+     * @var string
+     */
+    private $testApiKey = self::PLACEHOLDER_APIKEY;
+
+    public function set(string $pLocation, string $pName): void
     {
         $this->location = $pLocation;
         $this->name = $pName;
@@ -46,12 +60,35 @@ class APIKey extends Base
     {
         switch ($this->location) {
             case 'header':
-                return "    input.header[\"{$this->name}\"] == \"\"\n";
+                return "    input.header[\"{$this->name}\"] == \"{$this->testApiKey}\"\n";
 
             default:
                 break;
         }
-
         return '';
+    }
+
+    public function getTestAllow(array $pScopes): array
+    {
+        switch ($this->location) {
+            case 'header':
+                return ['header' => [$this->name => $this->testApiKey]];
+
+            default:
+                break;
+        }
+        return [];
+    }
+
+    public function getTestDeny(array $pScopes): array
+    {
+        switch ($this->location) {
+            case 'header':
+                return ['header' => [$this->name => '123']];
+
+            default:
+                break;
+        }
+        return [];
     }
 }

@@ -41,12 +41,12 @@ class Set
     /**
      * @var Path[] All paths
      */
-    public $paths;
+    public $paths = [];
 
     /**
      * @var string Name of the package
      */
-    private $packageName;
+    private $packageName = '';
 
     /**
      * @var string Name of the result
@@ -54,14 +54,14 @@ class Set
     private $resultName = self::DEFAULT_RESULT_NAME;
 
     /**
-     * @var string Default result value
+     * @var bool Default result value
      */
     private $resultDefault = self::DEFAULT_RESULT;
 
     /**
      * @var Base[] All security schemes
      */
-    private $security;
+    private $security = [];
 
     /**
      * @var array global security rules
@@ -84,7 +84,7 @@ class Set
     /**
      * Add a path
      */
-    public function pathAdd(Path $pPath)
+    public function pathAdd(Path $pPath): void
     {
         $this->paths[] = $pPath;
     }
@@ -92,7 +92,7 @@ class Set
     /**
      * Add a security scheme
      */
-    public function securitySchemeAdd(Base $pSecurity)
+    public function securitySchemeAdd(Base $pSecurity): void
     {
         $this->security[$pSecurity->getSchemeName()] = $pSecurity;
     }
@@ -113,7 +113,7 @@ class Set
     /**
      * Add a global security scheme
      */
-    public function securityGlobalAdd($pType, $pOptions): void
+    public function securityGlobalAdd(string $pType, array $pOptions): void
     {
         $this->securityGlobal[$pType] = $pOptions;
     }
@@ -127,28 +127,12 @@ class Set
     }
 
     /**
-     * Get the policy
+     *
      */
-    public function policyGet(): string
+    public function policiesGet(): array
     {
-        $result = "package {$this->packageName}\n\n";
-        $result .= "default {$this->resultName} = " . (($this->resultDefault === false) ? 'false' : 'true') . "\n";
-        foreach ($this->paths as $path) {
-            $result .= $path->getRules();
-        }
-        return $result;
-    }
-
-    /**
-     * Get the test policy
-     */
-    public function policyTestGet(): string
-    {
-        $result = "package {$this->packageName}\n";
-        foreach ($this->paths as $path) {
-            $result .= $path->getTests();
-        }
-        return $result;
+        return ['policy' => $this->policyGet(),
+                'test' => $this->policyTestGet()];
     }
 
     /**
@@ -165,5 +149,30 @@ class Set
     public function resultDefaultGet(): bool
     {
         return $this->resultDefault;
+    }
+
+    /**
+     * Get the policy
+     */
+    private function policyGet(): string
+    {
+        $result = "package {$this->packageName}\n\n";
+        $result .= "default {$this->resultName} = " . (($this->resultDefault === false) ? 'false' : 'true') . "\n";
+        foreach ($this->paths as $path) {
+            $result .= $path->getRules();
+        }
+        return $result;
+    }
+
+    /**
+     * Get the test policy
+     */
+    private function policyTestGet(): string
+    {
+        $result = "package {$this->packageName}\n";
+        foreach ($this->paths as $path) {
+            $result .= $path->getTests();
+        }
+        return $result;
     }
 }

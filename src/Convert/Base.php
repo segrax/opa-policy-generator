@@ -31,7 +31,9 @@ declare(strict_types=1);
 
 namespace Segrax\OpaPolicyGenerator\Convert;
 
+use Segrax\OpaPolicyGenerator\Policy\Set;
+
 interface Base
 {
-    public function fromString(string $pContent);
+    public function fromString(string $pContent): Set;
 }

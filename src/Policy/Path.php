@@ -31,18 +31,45 @@ declare(strict_types=1);
 
 namespace Segrax\OpaPolicyGenerator\Policy;
 
+use Exception;
 use Segrax\OpaPolicyGenerator\Policy\Security\Base;
+use Segrax\OpaPolicyGenerator\Policy\Set;
 
 class Path
 {
-    private $pathName;
-    private $pathRaw;
-    private $pathRule;
-    private $method;
+    /**
+     * @var array
+     */
+    private $pathName = [];
 
-    private $security;
-    private $parameters;
+    /**
+     * @var string
+     */
+    private $pathRaw = '';
 
+    /**
+     * @var array
+     */
+    private $pathRule = [];
+
+    /**
+     * @var string
+     */
+    private $method = '';
+
+    /**
+     * @var array
+     */
+    private $securitySchemes = [];
+
+    /**
+     * @var array
+     */
+    private $parameters = [];
+
+    /**
+     * @var Set
+     */
     private $set;
 
     /**
@@ -58,8 +85,8 @@ class Path
     }
 
     /**
-     * @param $pName Name of parameter
-     * @param $pLocation Location you can find (in the path, in query)
+     * @param string $pName Name of parameter
+     * @param string $pLocation Location you can find (in the path, in query)
      */
     public function parameterAdd(string $pName, string $pLocation): void
     {
@@ -71,7 +98,7 @@ class Path
      */
     public function securityAdd(string $pScheme, array $pScopes): void
     {
-        $this->security[$pScheme] = $pScopes;
+        $this->securitySchemes[$pScheme] = $pScopes;
     }
 
     /**
@@ -79,16 +106,19 @@ class Path
      */
     public function getRules(): string
     {
-        $security = $this->getSecurity();
-
+        $schemes = $this->getSecurityScehemes();
         // Public
-        if (count($security) === 0) {
+        if (count($schemes) === 0) {
             return $this->getRule();
         }
 
         // Private
         $result = '';
-        foreach ($security as $scheme => $scopes) {
+        foreach ($schemes as $scheme => $scopes) {
+            if (!is_string($scheme)) {
+                throw new Exception("bad security scheme found");
+            }
+
             $security = $this->set->securitySchemeGet($scheme);
             if (is_null($security)) {
                 echo "security scheme '$scheme' could not be located\n";
@@ -107,22 +137,26 @@ class Path
     public function getTests(): string
     {
         $result = '';
-        $security = $this->getSecurity();
+        $schemes = $this->getSecurityScehemes();
         // Public
-        if (count($security) === 0) {
-            return $this->getTest();
+        if (count($schemes) === 0) {
+            return $this->getTestAllow() . $this->getTestDeny();
         }
 
         // Private
         $result = '';
-        foreach ($security as $scheme => $scopes) {
+        foreach ($schemes as $scheme => $scopes) {
+            if (!is_string($scheme)) {
+                throw new Exception("bad security scheme found");
+            }
             $security = $this->set->securitySchemeGet($scheme);
             if (is_null($security)) {
                 echo "security scheme '$scheme' could not be located\n";
                 continue;
             }
 
-            $result .= $this->getTest($security, $scopes);
+            $result .= $this->getTestAllow($scheme, $security, $scopes);
+            $result .= $this->getTestDeny($scheme, $security, $scopes);
         }
 
         return $result;
@@ -155,14 +189,18 @@ class Path
     /**
      * Get the policy test
      */
-    protected function getTest(?Base $pSecurity = null, array $pScopes = []): string
+    protected function getTestAllow(string $pName = '', ?Base $pSecurity = null, array $pScopes = []): string
     {
+        if (strlen($pName)) {
+            $pName = "_$pName";
+        }
+
         $inputs = ['path' => $this->pathName, 'method' => $this->method];
 
         $name = $this->set->resultNameGet();
-        $result = "\ntest_" . $this->getName() . "_allowed {\n";
+        $result = "\ntest_" . $this->getName() . "{$pName}_allowed {\n";
         if (!is_null($pSecurity)) {
-            $inputs += $pSecurity->getTest($pScopes);
+            $inputs += $pSecurity->getTestAllow($pScopes);
         }
         $result .= "    $name with input as " . json_encode($inputs) . "\n";
         $result .= "}\n";
@@ -170,6 +208,29 @@ class Path
         return $result;
     }
 
+    /**
+     * Get the policy test
+     */
+    protected function getTestDeny(string $pName = '', ?Base $pSecurity = null, array $pScopes = []): string
+    {
+        if (is_null($pSecurity)) {
+            return '';
+        }
+
+        if (strlen($pName)) {
+            $pName = "_$pName";
+        }
+
+        $inputs = ['path' => $this->pathName, 'method' => $this->method];
+
+        $name = $this->set->resultNameGet();
+        $result = "\ntest_" . $this->getName() . "{$pName}_denied {\n";
+        $inputs += $pSecurity->getTestDeny($pScopes);
+        $result .= "    not $name with input as " . json_encode($inputs) . "\n";
+        $result .= "}\n";
+
+        return $result;
+    }
     /**
      * Get the path for the policy rule
      */
@@ -181,20 +242,20 @@ class Path
     /**
      * Get the security for this path
      */
-    protected function getSecurity()
+    protected function getSecurityScehemes(): array
     {
-        return (empty($this->security) ? $this->set->securityGlobalGet() : $this->security);
+        return (empty($this->securitySchemes) ? $this->set->securityGlobalGet() : $this->securitySchemes);
     }
 
     /**
      * Process our raw path and populate our name and rule
      */
-    private function pathProcess()
+    private function pathProcess(): void
     {
-        $component = explode('/', $this->pathRaw);
-        if (empty($component)) {
+        if (strpos($this->pathRaw, '/') === false) {
             return;
         }
+        $component = explode('/', $this->pathRaw);
 
         array_shift($component);
         foreach ($component as $pathPiece) {

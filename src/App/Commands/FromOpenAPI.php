@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace Segrax\OpaPolicyGenerator\App\Commands;
 
 use Segrax\OpaPolicyGenerator\Policy\Creator;
+use Segrax\OpaPolicyGenerator\Policy\Testing;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -49,18 +50,49 @@ class FromOpenAPI extends Command
         $this->addArgument('filename', InputArgument::REQUIRED);
 
         //$this->addOption('auth-mode', 'am', InputOption::VALUE_OPTIONAL,
+        $this->addOption('output', '', InputArgument::OPTIONAL);
+
         //'Add checks for a token, or a specific user' )
     }
 
+    /**
+     *  @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $filename = $input->getArgument('filename');
+        if (!is_string($filename)) {
+            $output->writeln('Invalid input filename');
+            return -1;
+        }
 
         $creator = new Creator();
         $policySet = $creator->fromFile($filename);
+        if (is_null($policySet)) {
+            $output->writeln("Failed");
+            return -1;
+        }
+        $saveas = 'output';
 
-        echo $policySet->policyGet();
-        echo $policySet->policyTestGet();
+        if ($input->hasOption('output')) {
+            $saveas = $input->getOption('output');
+            if (!is_string($saveas)) {
+                $output->writeln('Invalid output name');
+                return -1;
+            }
+        }
+
+        $policy = $saveas . '.rego';
+        $policyTest = $saveas . '_test.rego';
+
+        $policies = $policySet->policiesGet();
+
+        file_put_contents($policy, $policies['policy']);
+        file_put_contents($policyTest, $policies['test']);
+
+        $tester = new Testing();
+        echo $tester->test($policy, $policyTest);
+
         return 0;
     }
 }

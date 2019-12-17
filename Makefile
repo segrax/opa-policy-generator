@@ -18,10 +18,12 @@ DOCKER_RUN_CMD = docker run $(DOCKER_PARAMS)
 	$(DOCKER_RUN_CMD) $(TEST_CONTAINER) $@
 
 start:
-# docker build . -t optop
-	$(DOCKER_RUN_CMD) optop from-openapi test.yaml
+#	docker build . -t optop
+	$(DOCKER_RUN_CMD) optop from-openapi test.yaml --output=mine
 
 stop:
 	docker-compose down
 
+opa:
+	$(DOCKER_RUN_CMD) --entrypoint /opa optop test /srv/app/mine.rego /srv/app/mine_test.rego -v
 restart: stop start

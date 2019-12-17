@@ -33,6 +33,7 @@ namespace Segrax\OpaPolicyGenerator\Policy;
 
 use RuntimeException;
 use Segrax\OpaPolicyGenerator\Convert\Yaml;
+use Segrax\OpaPolicyGenerator\Policy\Set;
 
 /**
  * Create policies from other formats
@@ -40,9 +41,9 @@ use Segrax\OpaPolicyGenerator\Convert\Yaml;
 class Creator
 {
     /**
-     * Load YAML from a file
+     * Load from a file
      */
-    public function fromFile(string $pFilename)
+    public function fromFile(string $pFilename): ?Set
     {
         $converter = null;
 
@@ -66,12 +67,5 @@ class Creator
             return null;
         }
         return $converter->fromString($content);
-    }
-
-    /**
-     * Load YAML from a string
-     */
-    public function fromString(string $pContent)
-    {
     }
 }

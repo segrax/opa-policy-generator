@@ -33,13 +33,20 @@ namespace Segrax\OpaPolicyGenerator\Policy\Security;
 
 class Http extends Base
 {
-    public const SCHEME_BASIC = 'basic';
-    public const SCHEME_BEARER = 'bearer';
+    private const SCHEME_BASIC = 'basic';
+    private const SCHEME_BEARER = 'bearer';
 
-    public $scheme;
-    public $bearerFormat;
+    /**
+     * @var string
+     */
+    private $scheme = '';
 
-    public function set(string $pScheme, string $pBearerFormat = '')
+    /**
+     * @var string
+     */
+    private $bearerFormat = '';
+
+    public function set(string $pScheme, string $pBearerFormat = ''): void
     {
         $this->scheme = $pScheme;
         $this->bearerFormat = $pBearerFormat;
@@ -50,7 +57,6 @@ class Http extends Base
         switch ($this->scheme) {
             case self::SCHEME_BASIC:
                 return " basic not implemented\n";
-
             case self::SCHEME_BEARER:
                 return "    input.token != []\n";
 
@@ -61,18 +67,31 @@ class Http extends Base
         return '';
     }
 
-    public function getTest(array $pScopes): array
+    public function getTestAllow(array $pScopes): array
     {
         switch ($this->scheme) {
             case self::SCHEME_BASIC:
-                return " basic not implemented\n";
-
+                return [];
             case self::SCHEME_BEARER:
                 return ['token' => ['sub' => 'test']];
 
             default:
                 break;
         }
+        return [];
+    }
 
+    public function getTestDeny(array $pScopes): array
+    {
+        switch ($this->scheme) {
+            case self::SCHEME_BASIC:
+                return [];
+            case self::SCHEME_BEARER:
+                return ['token' => []];
+
+            default:
+                break;
+        }
+        return [];
     }
 }

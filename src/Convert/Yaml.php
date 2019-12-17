@@ -42,21 +42,38 @@ use Segrax\OpaPolicyGenerator\Policy\Set;
 
 class Yaml
 {
-    private $parsed;
+    /**
+     * @var array
+     */
+    private $parsed = [];
 
     /**
      * @var Set $policySet
      */
     private $policySet;
 
+    /**
+     * @var string
+     */
+    private $name = '';
+
+    /**
+     *
+     */
+    public function __construct(string $pName = 'name.api')
+    {
+        $this->name = $pName;
+        $this->policySet = new Set($this->name);
+    }
+
     public function fromString(string $pContent): ?Set
     {
+        $this->policySet = new Set($this->name);
+
         $this->parsed = yaml_parse($pContent);
         if ($this->parsed === false) {
             return null;
         }
-
-        $this->policySet = new Set("name.api");
 
         $this->securitySchemeLoad();
         $this->pathsLoad();
@@ -142,9 +159,8 @@ class Yaml
     /**
      * Create and prepare a security scheme
      */
-    protected function securitySchemeCreate(string $pName, array $pEntry): ?Base
+    protected function securitySchemeCreate(string $pName, array $pEntry): Base
     {
-        $security = null;
         switch (strtolower($pEntry['type'])) {
             case 'http':
                 $security = new Http($pName);
@@ -175,6 +191,8 @@ class Yaml
 
     /**
      * Get the contents of a referenced path
+     *
+     * @return mixed
      */
     protected function getRef(string $pPath)
     {

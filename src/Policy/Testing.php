@@ -29,46 +29,28 @@ SOFTWARE.
 
 declare(strict_types=1);
 
-namespace Segrax\OpaPolicyGenerator\Policy\Security;
+namespace Segrax\OpaPolicyGenerator\Policy;
 
-abstract class Base
+class Testing
 {
-    /**
-     * @var string
-     */
-    protected $schemeName;
+    private const CONTAINER_OPA_BINARY = '/opa';
 
-    public function __construct(string $pName)
+    private $binary;
+
+    public function __construct(string $pOpaBinary = self::CONTAINER_OPA_BINARY)
     {
-        $this->schemeName = $pName;
+
+        $this->binary = $pOpaBinary;
     }
 
-    public function getSchemeName(): string
+    public function test(string $pPolicy, string $pTest): string
     {
-        return $this->schemeName;
-    }
+        $cmd = $this->binary . ' test ';
+        $cmd .= escapeshellarg($pPolicy) . ' ' .
+        $cmd .= escapeshellarg($pTest) . ' -v';
 
-    /**
-     *  @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getRule(array $pScopes): string
-    {
-        return '';
-    }
-
-    /**
-     *  @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getTestAllow(array $pScopes): array
-    {
-        return [];
-    }
-
-    /**
-     *  @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getTestDeny(array $pScopes): array
-    {
-        return [];
+        $results = [];
+        exec($cmd, $results);
+        return implode('\n', $results);
     }
 }

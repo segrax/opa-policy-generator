@@ -14,6 +14,8 @@ COPY docker/php-override.ini 		$PHP_INI_DIR/conf.d/1-overide.ini
 
 COPY docker/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
+COPY --from=openpolicyagent/opa:latest /opa /opa
+
 COPY . /srv/app
 WORKDIR /srv/app
 
