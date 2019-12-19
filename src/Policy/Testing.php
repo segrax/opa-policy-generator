@@ -35,6 +35,9 @@ class Testing
 {
     private const CONTAINER_OPA_BINARY = '/opa';
 
+    /**
+     * @var string
+     */
     private $binary;
 
     public function __construct(string $pOpaBinary = self::CONTAINER_OPA_BINARY)
@@ -46,11 +49,11 @@ class Testing
     public function test(string $pPolicy, string $pTest): string
     {
         $cmd = $this->binary . ' test ';
-        $cmd .= escapeshellarg($pPolicy) . ' ' .
+        $cmd .= escapeshellarg($pPolicy) . ' ';
         $cmd .= escapeshellarg($pTest) . ' -v';
 
         $results = [];
         exec($cmd, $results);
-        return implode('\n', $results);
+        return implode("\n", $results);
     }
 }

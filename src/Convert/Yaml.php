@@ -66,6 +66,9 @@ class Yaml
         $this->policySet = new Set($this->name);
     }
 
+    /**
+     *
+     */
     public function fromString(string $pContent): ?Set
     {
         $this->policySet = new Set($this->name);

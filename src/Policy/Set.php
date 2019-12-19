@@ -127,12 +127,12 @@ class Set
     }
 
     /**
-     *
+     * Get the policy and its test
      */
     public function policiesGet(): array
     {
-        return ['policy' => $this->policyGet(),
-                'test' => $this->policyTestGet()];
+        return ['policy' => $this->policyCreate(),
+                'test' => $this->policyTestCreate()];
     }
 
     /**
@@ -154,7 +154,7 @@ class Set
     /**
      * Get the policy
      */
-    private function policyGet(): string
+    private function policyCreate(): string
     {
         $result = "package {$this->packageName}\n\n";
         $result .= "default {$this->resultName} = " . (($this->resultDefault === false) ? 'false' : 'true') . "\n";
@@ -167,7 +167,7 @@ class Set
     /**
      * Get the test policy
      */
-    private function policyTestGet(): string
+    private function policyTestCreate(): string
     {
         $result = "package {$this->packageName}\n";
         foreach ($this->paths as $path) {

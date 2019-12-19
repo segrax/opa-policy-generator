@@ -71,4 +71,12 @@ abstract class Base
     {
         return [];
     }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getVariables(array $pScones): array
+    {
+        return [];
+    }
 }

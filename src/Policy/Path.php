@@ -73,6 +73,11 @@ class Path
     private $set;
 
     /**
+     * @var string[]
+     */
+    private $variables = [];
+
+    /**
      *
      */
     public function __construct(Set $pSet, string $pPath, string $pMethod)
@@ -147,11 +152,11 @@ class Path
         $result = '';
         foreach ($schemes as $scheme => $scopes) {
             if (!is_string($scheme)) {
-                throw new Exception("bad security scheme found");
+                throw new Exception("bad security scheme '$scheme' found");
             }
             $security = $this->set->securitySchemeGet($scheme);
             if (is_null($security)) {
-                echo "security scheme '$scheme' could not be located\n";
+                echo "security scheme '$scheme' is not defined\n";
                 continue;
             }
 
@@ -165,7 +170,7 @@ class Path
     /**
      * Get the name of this rule
      */
-    public function getName(): string
+    protected function getName(): string
     {
         return implode('_', $this->pathName);
     }
@@ -177,6 +182,11 @@ class Path
     {
         $name = $this->set->resultNameGet();
         $result = "\n$name {\n";
+
+        foreach ($this->getVariables($pSecurity, $pScopes) as $variable) {
+            $result .= "    some {$variable}\n";
+        }
+
         $result .= "    input.method == \"{$this->method}\"\n";
         $result .= "    input.path = " . $this->getPathRule() . "\n";
         if (!is_null($pSecurity)) {
@@ -248,6 +258,17 @@ class Path
     }
 
     /**
+     * Get all variables
+     */
+    private function getVariables(?Base $pSecurity = null, array $pScopes = []): array
+    {
+        if (!is_null($pSecurity)) {
+            return array_merge($this->variables, $pSecurity->getVariables($pScopes));
+        }
+        return $this->variables;
+    }
+
+    /**
      * Process our raw path and populate our name and rule
      */
     private function pathProcess(): void
@@ -264,6 +285,7 @@ class Path
                 $pathPiece = trim($pathPiece, '{}');
                 $this->pathName[] = $pathPiece;
                 $this->pathRule[] = $pathPiece;
+                $this->variables[] = $pathPiece;
                 continue;
             }
 

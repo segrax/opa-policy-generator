@@ -59,6 +59,9 @@ class OAuth2 extends Base
         return $result;
     }
 
+    /**
+     *
+     */
     public function getTestAllow(array $pScopes): array
     {
         $result = ['token' => ['scopes' => []]];
@@ -68,9 +71,21 @@ class OAuth2 extends Base
         return $result;
     }
 
+    /**
+     *
+     */
     public function getTestDeny(array $pScopes): array
     {
         $result = ['token' => ['scopes' => []]];
+        return $result;
+    }
+
+    public function getVariables(array $pScopes): array
+    {
+        $result = [];
+        for ($i = 0; $i < count($pScopes); ++$i) {
+            $result[] = "scope{$i}";
+        }
         return $result;
     }
 }
