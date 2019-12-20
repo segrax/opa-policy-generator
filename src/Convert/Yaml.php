@@ -31,44 +31,13 @@ declare(strict_types=1);
 
 namespace Segrax\OpaPolicyGenerator\Convert;
 
-use RuntimeException;
-use Segrax\OpaPolicyGenerator\Policy\Path;
-use Segrax\OpaPolicyGenerator\Policy\Security\APIKey;
-use Segrax\OpaPolicyGenerator\Policy\Security\Base;
-use Segrax\OpaPolicyGenerator\Policy\Security\Http;
-use Segrax\OpaPolicyGenerator\Policy\Security\OAuth2;
-use Segrax\OpaPolicyGenerator\Policy\Security\OpenID;
 use Segrax\OpaPolicyGenerator\Policy\Set;
 
 /**
  * Conversions from YAML to a Policy Set
  */
-class Yaml
+class Yaml extends Json
 {
-    /**
-     * @var array
-     */
-    private $parsed = [];
-
-    /**
-     * @var Set $policySet
-     */
-    private $policySet;
-
-    /**
-     * @var string
-     */
-    private $name = '';
-
-    /**
-     * Setup the policy set
-     */
-    public function __construct(string $pName = 'name.api')
-    {
-        $this->name = $pName;
-        $this->policySet = new Set($this->name);
-    }
-
     /**
      * @inheritdoc
      */
@@ -87,131 +56,4 @@ class Yaml
         return $this->policySet;
     }
 
-    /**
-     * Load all paths
-     */
-    protected function pathsLoad(): void
-    {
-        // Loop every defined path
-        foreach ($this->parsed['paths'] as $routePath => $methods) {
-            // Loop every defined method
-            foreach ($methods as $method => $options) {
-                $path = new Path($this->policySet, $routePath, $method);
-
-                if (isset($options['security'])) {
-                    $this->pathSecurityParse($path, $options['security']);
-                }
-
-                // Check for options
-                if (isset($options['parameters'])) {
-                    $this->pathParameterParse($path, $options['parameters']);
-                }
-
-                $this->policySet->pathAdd($path);
-            }
-        }
-    }
-
-    /**
-     * Parse the security of a path
-     */
-    protected function pathSecurityParse(Path $pPath, array $pSecurityTypes): void
-    {
-        foreach ($pSecurityTypes as $type) {
-            foreach ($type as $name => $data) {
-                $pPath->securityAdd($name, $data);
-            }
-        }
-    }
-
-    /**
-     * Parse the parameters of a path
-     */
-    protected function pathParameterParse(Path $pPath, array $pParameters): void
-    {
-        foreach ($pParameters as $parameter) {
-            $pathParameter = $parameter;
-
-            if (isset($pathParameter['$ref'])) {
-                $pathParameter = $this->getRef($parameter['$ref']);
-            }
-
-            if ($pathParameter['in'] === 'path') {
-                $pPath->parameterAdd($pathParameter['name'], $pathParameter['in']);
-            }
-        }
-    }
-
-    /**
-     * Load the component security schemes, and the global security rules
-     */
-    protected function securitySchemeLoad(): void
-    {
-        if (isset($this->parsed['components']['securitySchemes'])) {
-            foreach ($this->parsed['components']['securitySchemes'] as $name => $entry) {
-                $security = $this->securitySchemeCreate($name, $entry);
-                $this->policySet->securitySchemeAdd($security);
-            }
-        }
-
-        // Global security rules?
-        if (isset($this->parsed['security'])) {
-            foreach ($this->parsed['security'] as $name => $options) {
-                $this->policySet->securityGlobalAdd($name, $options);
-            }
-        }
-    }
-
-    /**
-     * Create and prepare a security scheme
-     */
-    protected function securitySchemeCreate(string $pName, array $pEntry): Base
-    {
-        switch (strtolower($pEntry['type'])) {
-            case 'http':
-                $security = new Http($pName);
-                $security->set($pEntry['scheme'], $pEntry['bearerFormat'] ?? '');
-                break;
-
-            case 'apikey':
-                $security = new APIKey($pName);
-                $security->set($pEntry['in'], $pEntry['name']);
-                break;
-
-            case 'openidconnect':
-                $security = new OpenID($pName);
-                break;
-
-            case 'oauth2':
-                $security = new OAuth2($pName);
-                foreach ($pEntry['flows'] as $flowName => $data) {
-                    $security->flowAdd($flowName, $data['scopes'] ?? []);
-                }
-                break;
-
-            default:
-                throw new RuntimeException('Unknown security schema type: ' . $pEntry['type']);
-        }
-        return $security;
-    }
-
-    /**
-     * Get the contents of a referenced path
-     *
-     * @return mixed
-     */
-    protected function getRef(string $pPath)
-    {
-        $pathPieces = explode('/', trim($pPath, '#'));
-        array_shift($pathPieces);
-        $current = $this->parsed;
-        foreach ($pathPieces as $piece) {
-            if (!isset($current[$piece])) {
-                throw new RuntimeException("$pPath could not be found");
-            }
-            $current = $current[$piece];
-        }
-
-        return $current;
-    }
 }

@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace Segrax\OpaPolicyGenerator\Policy;
 
 use RuntimeException;
+use Segrax\OpaPolicyGenerator\Convert\Json;
 use Segrax\OpaPolicyGenerator\Convert\Yaml;
 use Segrax\OpaPolicyGenerator\Policy\Set;
 
@@ -41,7 +42,7 @@ use Segrax\OpaPolicyGenerator\Policy\Set;
 class Creator
 {
     /**
-     * Load from a file
+     * Generate a policy and tests from a file
      */
     public function fromFile(string $pFilename): ?Set
     {
@@ -52,6 +53,10 @@ class Creator
             case 'yaml':
             case 'yml':
                 $converter = new Yaml();
+                break;
+
+            case 'json':
+                $converter = new Json();
                 break;
 
             default:
@@ -67,5 +72,21 @@ class Creator
             return null;
         }
         return $converter->fromString($content);
+    }
+
+    /**
+     * Export a policy and tests into files
+     */
+    public function toFile(Set $pPolicySet, string $pFilenameBase)
+    {
+        $policy = $pFilenameBase . '.rego';
+        $policyTest = $pFilenameBase . '_test.rego';
+
+        $policies = $pPolicySet->policiesGet();
+
+        file_put_contents($policy, $policies['policy']);
+        file_put_contents($policyTest, $policies['test']);
+
+        return ['policy' => $policy, 'test' => $policyTest];
     }
 }

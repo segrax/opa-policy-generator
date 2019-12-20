@@ -89,16 +89,10 @@ class FromOpenAPI extends Command
             }
         }
 
-        $policy = $saveas . '.rego';
-        $policyTest = $saveas . '_test.rego';
-
-        $policies = $policySet->policiesGet();
-
-        file_put_contents($policy, $policies['policy']);
-        file_put_contents($policyTest, $policies['test']);
+        $files = $creator->toFile($policySet, $saveas);
 
         $tester = new Testing();
-        echo $tester->test($policy, $policyTest);
+        echo $tester->test($files['policy'], $files['test']);
 
         return 0;
     }
