@@ -89,8 +89,8 @@ class OAuth2 extends Base
     public function getVariables(array $pScopes): array
     {
         $result = [];
-        for ($i = 0; $i < count($pScopes); ++$i) {
-            //$result[] = "scope{$i}";
+        foreach (array_keys($pScopes) as $i) {
+            $result[] = "scope{$i}";
         }
         return $result;
     }

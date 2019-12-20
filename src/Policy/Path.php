@@ -282,11 +282,11 @@ class Path
         foreach ($component as $pathPiece) {
 
             // is a parameter?
-            if (strpos($pathPiece, '{') !== false && strpos($pathPiece, '}') !== false) {
-                $pathPiece = trim($pathPiece, '{}');
-                $this->pathName[] = $pathPiece;
-                $this->pathRule[] = $pathPiece;
-                $this->variables[] = $pathPiece;
+            preg_match('/\{(.*)\}/', $pathPiece, $pieces);
+            if (count($pieces)) {
+                $this->pathName[] = $pieces[1];
+                $this->pathRule[] = $pieces[1];
+                $this->variables[] = $pieces[1];
                 continue;
             }
 
