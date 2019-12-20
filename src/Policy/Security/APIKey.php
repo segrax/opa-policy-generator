@@ -50,12 +50,18 @@ class APIKey extends Base
      */
     private $testApiKey = self::PLACEHOLDER_APIKEY;
 
+    /**
+     * Set the name and location
+     */
     public function set(string $pLocation, string $pName): void
     {
         $this->location = $pLocation;
         $this->name = $pName;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getRule(array $pScopes): string
     {
         switch ($this->location) {
@@ -68,6 +74,9 @@ class APIKey extends Base
         return '';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getTestAllow(array $pScopes): array
     {
         switch ($this->location) {
@@ -80,6 +89,9 @@ class APIKey extends Base
         return [];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getTestDeny(array $pScopes): array
     {
         switch ($this->location) {

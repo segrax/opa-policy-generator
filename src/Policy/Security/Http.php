@@ -31,6 +31,9 @@ declare(strict_types=1);
 
 namespace Segrax\OpaPolicyGenerator\Policy\Security;
 
+/**
+ * HTTP security
+ */
 class Http extends Base
 {
     private const SCHEME_BASIC = 'basic';
@@ -46,12 +49,18 @@ class Http extends Base
      */
     private $bearerFormat = '';
 
+    /**
+     * @inheritdoc
+     */
     public function set(string $pScheme, string $pBearerFormat = ''): void
     {
         $this->scheme = $pScheme;
         $this->bearerFormat = $pBearerFormat;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getRule(array $pScopes): string
     {
         switch ($this->scheme) {
@@ -67,6 +76,9 @@ class Http extends Base
         return '';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getTestAllow(array $pScopes): array
     {
         switch ($this->scheme) {
@@ -81,6 +93,9 @@ class Http extends Base
         return [];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getTestDeny(array $pScopes): array
     {
         switch ($this->scheme) {

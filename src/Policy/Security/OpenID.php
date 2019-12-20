@@ -31,6 +31,9 @@ declare(strict_types=1);
 
 namespace Segrax\OpaPolicyGenerator\Policy\Security;
 
+/**
+ * OpenID security
+ */
 class OpenID extends Base
 {
 

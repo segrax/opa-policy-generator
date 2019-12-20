@@ -35,5 +35,8 @@ use Segrax\OpaPolicyGenerator\Policy\Set;
 
 interface Base
 {
+    /**
+     * Convert a string to a policy set
+     */
     public function fromString(string $pContent): Set;
 }

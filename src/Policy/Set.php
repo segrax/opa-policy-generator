@@ -33,9 +33,19 @@ namespace Segrax\OpaPolicyGenerator\Policy;
 
 use Segrax\OpaPolicyGenerator\Policy\Security\Base;
 
+/**
+ * A policy and its tests
+ */
 class Set
 {
+    /**
+     * Name of the primary result
+     */
     private const DEFAULT_RESULT_NAME = 'allow';
+
+    /**
+     * Default value of the primary result
+     */
     private const DEFAULT_RESULT = false;
 
     /**
@@ -69,7 +79,7 @@ class Set
     private $securityGlobal = [];
 
     /**
-     *
+     * Setup the policy set
      */
     public function __construct(
         string $pPackageName,

@@ -37,10 +37,15 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
+/**
+ * from-openapi CLI command
+ */
 class FromOpenAPI extends Command
 {
+    /**
+     * Setup the arguments/options
+     */
     protected function configure(): void
     {
         parent::configure();
@@ -56,6 +61,8 @@ class FromOpenAPI extends Command
     }
 
     /**
+     * @inheritdoc
+     *
      *  @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function execute(InputInterface $input, OutputInterface $output): int

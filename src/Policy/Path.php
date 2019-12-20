@@ -269,7 +269,7 @@ class Path
     }
 
     /**
-     * Process our raw path and populate our name and rule
+     * Process our raw path and populate our name, rules and variables
      */
     private function pathProcess(): void
     {
@@ -280,8 +280,9 @@ class Path
 
         array_shift($component);
         foreach ($component as $pathPiece) {
+
             // is a parameter?
-            if (strpos($pathPiece, '{') >= 0 && strpos($pathPiece, '}')) {
+            if (strpos($pathPiece, '{') !== false && strpos($pathPiece, '}') !== false) {
                 $pathPiece = trim($pathPiece, '{}');
                 $this->pathName[] = $pathPiece;
                 $this->pathRule[] = $pathPiece;

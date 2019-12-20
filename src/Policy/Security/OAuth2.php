@@ -31,6 +31,9 @@ declare(strict_types=1);
 
 namespace Segrax\OpaPolicyGenerator\Policy\Security;
 
+/**
+ * OAuth2 security
+ */
 class OAuth2 extends Base
 {
     /**
@@ -39,7 +42,7 @@ class OAuth2 extends Base
     protected $flows = [];
 
     /**
-     *
+     * Add an authorization flow type
      */
     public function flowAdd(string $pType, array $pScopes): void
     {
@@ -47,7 +50,7 @@ class OAuth2 extends Base
     }
 
     /**
-     *
+     * @inheritdoc
      */
     public function getRule(array $pScopes): string
     {
@@ -60,7 +63,7 @@ class OAuth2 extends Base
     }
 
     /**
-     *
+     * @inheritdoc
      */
     public function getTestAllow(array $pScopes): array
     {
@@ -72,7 +75,7 @@ class OAuth2 extends Base
     }
 
     /**
-     *
+     * @inheritdoc
      */
     public function getTestDeny(array $pScopes): array
     {
@@ -80,11 +83,14 @@ class OAuth2 extends Base
         return $result;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getVariables(array $pScopes): array
     {
         $result = [];
         for ($i = 0; $i < count($pScopes); ++$i) {
-            $result[] = "scope{$i}";
+            //$result[] = "scope{$i}";
         }
         return $result;
     }

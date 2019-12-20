@@ -40,6 +40,9 @@ use Segrax\OpaPolicyGenerator\Policy\Security\OAuth2;
 use Segrax\OpaPolicyGenerator\Policy\Security\OpenID;
 use Segrax\OpaPolicyGenerator\Policy\Set;
 
+/**
+ * Conversions from YAML to a Policy Set
+ */
 class Yaml
 {
     /**
@@ -58,7 +61,7 @@ class Yaml
     private $name = '';
 
     /**
-     *
+     * Setup the policy set
      */
     public function __construct(string $pName = 'name.api')
     {
@@ -67,7 +70,7 @@ class Yaml
     }
 
     /**
-     *
+     * @inheritdoc
      */
     public function fromString(string $pContent): ?Set
     {

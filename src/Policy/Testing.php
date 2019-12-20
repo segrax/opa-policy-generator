@@ -31,6 +31,9 @@ declare(strict_types=1);
 
 namespace Segrax\OpaPolicyGenerator\Policy;
 
+/**
+ * Interface to OPA test
+ */
 class Testing
 {
     private const CONTAINER_OPA_BINARY = '/opa';
@@ -40,12 +43,18 @@ class Testing
      */
     private $binary;
 
+    /**
+     * Setup class
+     */
     public function __construct(string $pOpaBinary = self::CONTAINER_OPA_BINARY)
     {
 
         $this->binary = $pOpaBinary;
     }
 
+    /**
+     * Test a policy against its set of tests
+     */
     public function test(string $pPolicy, string $pTest): string
     {
         $cmd = $this->binary . ' test ';

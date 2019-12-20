@@ -38,17 +38,25 @@ abstract class Base
      */
     protected $schemeName;
 
+    /**
+     * Setup scheme
+     */
     public function __construct(string $pName)
     {
         $this->schemeName = $pName;
     }
 
+    /**
+     * Get the name of the scheme
+     */
     public function getSchemeName(): string
     {
         return $this->schemeName;
     }
 
     /**
+     * Get the rule
+     *
      *  @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getRule(array $pScopes): string
@@ -57,6 +65,8 @@ abstract class Base
     }
 
     /**
+     * Get the allow test conditions
+     *
      *  @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getTestAllow(array $pScopes): array
@@ -65,6 +75,8 @@ abstract class Base
     }
 
     /**
+     * Get the deny test conditions
+     *
      *  @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getTestDeny(array $pScopes): array
@@ -73,6 +85,8 @@ abstract class Base
     }
 
     /**
+     * Get all variables created by this security
+     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getVariables(array $pScones): array
