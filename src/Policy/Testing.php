@@ -48,18 +48,38 @@ class Testing
      */
     public function __construct(string $pOpaBinary = self::CONTAINER_OPA_BINARY)
     {
-
         $this->binary = $pOpaBinary;
     }
 
     /**
-     * Test a policy against its set of tests
+     * Get the policy coverage report
+     */
+    public function coverage(string $pPolicy, string $pTest): string
+    {
+        $reports = json_decode($this->execute($pPolicy, $pTest, true), true);
+        return json_encode($reports['files'][$pPolicy], JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     *
      */
     public function test(string $pPolicy, string $pTest): string
+    {
+        return $this->execute($pPolicy, $pTest, false);
+    }
+
+    /**
+     * Run a policy against its set of tests
+     */
+    protected function execute(string $pPolicy, string $pTest, bool $pCoverage): string
     {
         $cmd = $this->binary . ' test ';
         $cmd .= escapeshellarg($pPolicy) . ' ';
         $cmd .= escapeshellarg($pTest) . ' -v';
+
+        if ($pCoverage === true) {
+            $cmd .= ' --coverage --format=json';
+        }
 
         $results = [];
         exec($cmd, $results);

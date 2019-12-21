@@ -79,8 +79,8 @@ class FromOpenAPI extends Command
             $output->writeln("Failed");
             return -1;
         }
-        $saveas = 'output';
 
+        $saveas = 'output';
         if ($input->hasOption('output')) {
             $saveas = $input->getOption('output');
             if (!is_string($saveas)) {
@@ -93,6 +93,7 @@ class FromOpenAPI extends Command
 
         $tester = new Testing();
         echo $tester->test($files['policy'], $files['test']);
+        //echo $tester->coverage($files['policy'], $files['test']);
 
         return 0;
     }

@@ -55,5 +55,4 @@ class Yaml extends Json
 
         return $this->policySet;
     }
-
 }

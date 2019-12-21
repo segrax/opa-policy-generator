@@ -90,6 +90,8 @@ class Path
     }
 
     /**
+     * Add a path parameter
+     *
      * @param string $pName Name of parameter
      * @param string $pLocation Location you can find (in the path, in query)
      */
@@ -99,7 +101,7 @@ class Path
     }
 
     /**
-     *
+     * Add a security scheme
      */
     public function securityAdd(string $pScheme, array $pScopes): void
     {
@@ -280,7 +282,6 @@ class Path
 
         array_shift($component);
         foreach ($component as $pathPiece) {
-
             // is a parameter?
             preg_match('/\{(.*)\}/', $pathPiece, $pieces);
             if (count($pieces)) {

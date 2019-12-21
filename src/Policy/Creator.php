@@ -77,7 +77,7 @@ class Creator
     /**
      * Export a policy and tests into files
      */
-    public function toFile(Set $pPolicySet, string $pFilenameBase)
+    public function toFile(Set $pPolicySet, string $pFilenameBase): array
     {
         $policy = $pFilenameBase . '.rego';
         $policyTest = $pFilenameBase . '_test.rego';
@@ -88,5 +88,22 @@ class Creator
         file_put_contents($policyTest, $policies['test']);
 
         return ['policy' => $policy, 'test' => $policyTest];
+    }
+
+    /**
+     * Test a policy set via 'opa test'
+     */
+    public function testSet(Set $pPolicySet): string
+    {
+        $saveas = sys_get_temp_dir() . '/' . uniqid();
+        $files = $this->toFile($pPolicySet, $saveas);
+
+        $tester = new Testing();
+        $result = $tester->test($files['policy'], $files['test']);
+
+        unlink($files['policy']);
+        unlink($files['test']);
+
+        return $result;
     }
 }
