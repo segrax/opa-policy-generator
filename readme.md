@@ -8,7 +8,7 @@ Convert an [OpenAPI](https://www.openapis.org/) 3 specification to an OPA policy
 While this tool will produce a file representing a policy, it is advised a manual review of every line is performed prior to using the policy.
 
 
-## Beta Warning
+## Early Development
 This tool is under development and may not support all OpenAPI3 features, please open feature requests if you find features missing that you require.
 
 ## How to use
@@ -36,6 +36,10 @@ data.name.api.test_media_upload_bearerAuth_denied: PASS (447.2µs)
 --------------------------------------------------------------------------------
 PASS: 12/12
 ```
+
+## Todo
+
+Lots of features remain to be added, please submit ideas/feature requests to the issue tracker.
 
 ## License
 
