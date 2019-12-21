@@ -6,8 +6,10 @@ Convert an [OpenAPI](https://www.openapis.org/) 3 specification to an OPA policy
 
 ## Warning
 While this tool will produce a file representing a policy, it is advised a manual review of every line is performed prior to using the policy.
-This tool is under development and may not support all OpenAPI3 features, please open feature requests if you find missing features.
 
+
+## Beta Warning
+This tool is under development and may not support all OpenAPI3 features, please open feature requests if you find features missing that you require.
 
 ## How to use
 
@@ -34,3 +36,7 @@ data.name.api.test_media_upload_bearerAuth_denied: PASS (447.2µs)
 --------------------------------------------------------------------------------
 PASS: 12/12
 ```
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.txt) for more information.
