@@ -1,0 +1,75 @@
+openapi: "3.0.2"
+info:
+  title: "test-api"
+  version: "0.1"
+
+paths:
+  /locat/{id}:
+    get:
+        security:
+          - oauth2: [scope1, scope2]
+          - apiKey1: []
+        description: test
+        parameters:
+            - in: path
+              name: id
+              required: true
+              schema:
+                type: number
+              description: The user ID
+            - $ref: "#/components/parameters/latitude"
+        responses:
+            200:
+                description: Got all nearby locations
+                content:
+                    application/json:
+                        schema:
+                          $ref: '#/components/schemas/locations'
+components:
+  schemas:
+    location:
+      description: A single location
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        lat:
+          $ref: "#/components/parameters/latitude"
+        
+    locations:
+      description: Collection of locations
+      type: array
+      items:
+        $ref: '#/components/schemas/location'
+      example: 
+        - id: 1
+          name: 'Location 1'
+          lat: -32.92
+          long: 145.77
+          distance: 12
+  parameters:
+    latitude:
+      name: lat
+      description: geo location, longitude
+      in: query
+      example: -32.920000000000002
+      schema:
+        type: number
+
+  securitySchemes:
+    apiKey1:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://example.com/oauth/authorize
+          tokenUrl: https://example.com/oauth/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+            admin: Grants access to admin operations
