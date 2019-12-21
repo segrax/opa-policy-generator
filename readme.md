@@ -2,7 +2,10 @@
 
 Convert an [OpenAPI](https://www.openapis.org/) 3 specification to an OPA policy.
 
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.txt)
+
 ## Warning
+While this tool will produce a file representing a policy, it is advised a manual review of every line is performed prior to using the policy.
 This tool is under development and may not support all OpenAPI3 features, please open feature requests if you find missing features.
 
 
