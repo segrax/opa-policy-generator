@@ -23,7 +23,7 @@ build:
 
 start:
 	docker build . -t opapg
-	$(DOCKER_RUN_CMD) opapg from-openapi test.yaml --output=mine
+	$(DOCKER_RUN_CMD) opapg from-openapi openapi.yaml --output=mypolicy
 
 stop:
 	docker-compose down

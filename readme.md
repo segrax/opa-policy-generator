@@ -7,6 +7,7 @@ Convert an [OpenAPI](https://www.openapis.org/) 3 specification to an OPA policy
 ## Warning
 While this tool will produce a file representing a policy, it is advised a manual review of every line is performed prior to using the policy.
 
+Items such as API-Keys must be manually set, and any other security related items not definable in a spec.
 
 ## Early Development
 This tool is under development and may not support all OpenAPI3 features, please open feature requests if you find features missing that you require.
