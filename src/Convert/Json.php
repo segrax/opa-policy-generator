@@ -156,8 +156,10 @@ class Json
 
         // Global security rules?
         if (isset($this->parsed['security'])) {
-            foreach ($this->parsed['security'] as $name => $options) {
-                $this->policySet->securityGlobalAdd($name, $options);
+            foreach ($this->parsed['security'] as $security) {
+                foreach ($security as $name => $options) {
+                    $this->policySet->securityGlobalAdd($name, $options);
+                }
             }
         }
     }
