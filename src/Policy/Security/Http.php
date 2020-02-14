@@ -50,6 +50,11 @@ class Http extends Base
     private $bearerFormat = '';
 
     /**
+     * @var array
+     */
+    private $token = [];
+
+    /**
      * @inheritdoc
      */
     public function set(string $pScheme, string $pBearerFormat = ''): void
@@ -67,7 +72,9 @@ class Http extends Base
             case self::SCHEME_BASIC:
                 return " basic not implemented\n";
             case self::SCHEME_BEARER:
-                return "    input.token != []\n";
+                if(empty($this->token)) 
+                    return "    input.token.sub != []\n";
+                return "    input.token.sub == \"" . $this->token['sub'] . "\"\n";
 
             default:
                 break;
@@ -108,5 +115,10 @@ class Http extends Base
                 break;
         }
         return [];
+    }
+
+    public function setToken(array $pToken): void
+    {
+        $this->token = $pToken;
     }
 }
