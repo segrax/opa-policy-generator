@@ -57,7 +57,7 @@ class Testing
     public function coverage(string $pPolicy, string $pTest): string
     {
         $reports = json_decode($this->execute($pPolicy, $pTest, true), true);
-        return json_encode($reports['files'][$pPolicy], JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
+        return json_encode($reports['files'][$pPolicy]);
     }
 
     /**
@@ -77,8 +77,13 @@ class Testing
         $cmd .= escapeshellarg($pPolicy) . ' ';
         $cmd .= escapeshellarg($pTest) . ' -v';
 
-        if ($pCoverage === true) {
-            $cmd .= ' --coverage --format=json';
+        switch($pCoverage) {
+            case false:
+                $cmd .= ' -l';  // Show line numbers
+            break;
+            case true:
+                $cmd .= ' --coverage --format=json';
+            break;
         }
 
         $results = [];
