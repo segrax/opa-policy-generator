@@ -68,14 +68,27 @@ class Testing
         return $this->execute($pPolicy, $pTest, false);
     }
 
+    
+    /**
+     * 
+     */
+    protected function runOPA(string $pCmd, string &$pStdOut, string &$pStdError) {
+        $cmd = $this->binary . " test $pCmd";
+        $proc = proc_open($cmd,[ 1 => ['pipe','w'], 2 => ['pipe','w'],],$pipes);
+        $pStdOut = stream_get_contents($pipes[1]);
+        $pStdError = stream_get_contents($pipes[2]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        return proc_close($proc);
+    }
+
     /**
      * Run a policy against its set of tests
      */
     protected function execute(string $pPolicy, string $pTest, bool $pCoverage): string
     {
-        $cmd = $this->binary . ' test ';
-        $cmd .= escapeshellarg($pPolicy) . ' ';
-        $cmd .= escapeshellarg($pTest) . ' -v';
+        $cmd = escapeshellarg($pPolicy) . ' ';
+        $cmd .= escapeshellarg($pTest) . ' ';
 
         switch($pCoverage) {
             case false:
@@ -87,7 +100,8 @@ class Testing
         }
 
         $results = [];
-        exec($cmd, $results);
-        return implode("\n", $results);
+        $errors = [];
+        $code = $this->runOPA($cmd, $results, $errors);
+        return $code == 1 ? $errors : $results;
     }
 }
