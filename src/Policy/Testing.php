@@ -99,8 +99,8 @@ class Testing
             break;
         }
 
-        $results = [];
-        $errors = [];
+        $results = '';
+        $errors = '';
         $code = $this->runOPA($cmd, $results, $errors);
         return $code == 1 ? $errors : $results;
     }
