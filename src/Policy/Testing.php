@@ -92,7 +92,7 @@ class Testing
 
         switch($pCoverage) {
             case false:
-                $cmd .= ' -l';  // Show line numbers
+                $cmd .= ' -v';  // Show line numbers
             break;
             case true:
                 $cmd .= ' --coverage --format=json';
