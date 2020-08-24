@@ -94,17 +94,31 @@ class Json
     {
         // Loop every defined path
         foreach ($this->parsed['paths'] as $routePath => $methods) {
+			
+			$commonOptions = ['security' => [], 'parameters' => []];
+			
+			// First loop and find any common options for all methods
+			foreach ($methods as $method => $options) {
+
+				if (!in_array($method, ['GET', 'POST', 'PUT', 'HEAD', 'OPTIONS', 'DELETE', 'CONNECT', 'TRACE'])) {
+					$commonOptions[$method] = $options;
+				}
+			}
+				
             // Loop every defined method
             foreach ($methods as $method => $options) {
+				if (!in_array(strtoupper($method), ['GET', 'POST', 'PUT', 'HEAD', 'OPTIONS', 'DELETE', 'CONNECT', 'TRACE'])) {
+					continue;
+				}
                 $path = new Path($this->policySet, $routePath, $method);
 
                 if (isset($options['security'])) {
-                    $this->pathSecurityParse($path, $options['security']);
+                    $this->pathSecurityParse($path, array_merge($commonOptions['security'],$options['security']));
                 }
 
                 // Check for options
                 if (isset($options['parameters'])) {
-                    $this->pathParameterParse($path, $options['parameters']);
+                    $this->pathParameterParse($path, array_merge($commonOptions['parameters'], $options['parameters']));
                 }
 
                 $this->policySet->pathAdd($path);
