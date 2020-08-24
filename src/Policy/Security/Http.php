@@ -92,7 +92,9 @@ class Http extends Base
             case self::SCHEME_BASIC:
                 return [];
             case self::SCHEME_BEARER:
-                return ['token' => ['sub' => 'test']];
+			    if(empty($this->token)) 
+                    return ['token' => ['sub' => '']];
+                return ['token' => ['sub' => $this->token['sub']]];
 
             default:
                 break;
