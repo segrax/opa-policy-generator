@@ -174,7 +174,7 @@ class Path
      */
     protected function getName(): string
     {
-        return implode('_', $this->pathName);
+        return  str_replace('-', '_', implode('_', $this->pathName));
     }
 
     /**
